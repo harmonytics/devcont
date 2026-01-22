@@ -104,5 +104,9 @@ RUN npm install -g @openai/codex @go-task/cli
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH="/home/node/.local/bin:$PATH"
 
+# Install Python 3.14 via uv
+RUN /home/node/.local/bin/uv python install 3.14
+RUN /home/node/.local/bin/uv python pin 3.14
+
 # Default command
 CMD ["zsh"]
