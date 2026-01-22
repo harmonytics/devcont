@@ -1,4 +1,5 @@
 import { resolve, basename } from 'path';
+import { existsSync } from 'fs';
 import { spawnSync } from 'child_process';
 import chalk from 'chalk';
 import { requireDockerCli, requireDevcontainer } from '../utils/cli.js';
@@ -179,6 +180,28 @@ export async function downCommand(folder = '.', options = {}) {
 
   requireDevcontainer(folderPath);
   requireDockerCli();
+
+  // Check if docker-compose is used
+  const devcontainerDir = resolve(folderPath, '.devcontainer');
+  const composeFiles = ['docker-compose.yml', 'docker-compose.yaml', 'compose.yml', 'compose.yaml'];
+  const composeFile = composeFiles.find(f => existsSync(resolve(devcontainerDir, f)));
+
+  if (composeFile) {
+    console.log(chalk.blue('\nUsing docker compose down...'));
+    if (!dryRun) {
+      const result = spawnSync('docker', ['compose', 'down'], {
+        cwd: devcontainerDir,
+        stdio: 'inherit'
+      });
+      if (result.status === 0) {
+        console.log(chalk.green('\nAll services stopped successfully!'));
+        return;
+      }
+    } else {
+      console.log(chalk.magenta('[DRY RUN] Would run: docker compose down'));
+      return;
+    }
+  }
 
   console.log(chalk.blue('\nFinding running containers...'));
 
