@@ -54,6 +54,10 @@ RUN mkdir -p /usr/local/share/npm-global && \
 
 ARG USERNAME=node
 
+# Configure passwordless sudo for node user
+RUN echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
+  chmod 0440 /etc/sudoers.d/$USERNAME
+
 # Persist bash history
 RUN mkdir /commandhistory && \
   touch /commandhistory/.bash_history && \
