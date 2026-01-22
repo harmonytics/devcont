@@ -1,0 +1,41 @@
+{
+  "name": "Fullstack Workspace",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "bash",
+            "icon": "terminal-bash"
+          },
+          "zsh": {
+            "path": "zsh"
+          }
+        },
+        "python.defaultInterpreterPath": "/workspace/backend/.venv/bin/python"
+      }
+    }
+  },
+  "remoteUser": "node",
+  "postCreateCommand": "cd /workspace/backend && uv sync || true; cd /workspace/frontend && npm install || true",
+  "postStartCommand": "sudo /usr/local/bin/init-firewall.sh || echo 'Firewall init failed, continuing'",
+  "waitFor": "postStartCommand"
+}

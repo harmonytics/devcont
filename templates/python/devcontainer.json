@@ -1,0 +1,30 @@
+{
+  "name": "Python Workspace (uv)",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".",
+    "args": {
+      "PYTHON_VERSION": "3.14"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "python.defaultInterpreterPath": "/workspace/.venv/bin/python"
+      }
+    }
+  },
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=python-venv-${devcontainerId},target=/workspace/.venv,type=volume"
+  ],
+  "postCreateCommand": "uv sync",
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated"
+}

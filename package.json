@@ -1,0 +1,31 @@
+{
+  "name": "devcont",
+  "version": "1.0.0",
+  "description": "CLI tool for devcontainerizing projects with Claude Code support",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "devcont": "./bin/devcont.js"
+  },
+  "scripts": {
+    "test": "DEVCONT_NO_PROMPT=1 node --test",
+    "lint:templates": "node scripts/validate-templates.js",
+    "spec": "./scripts/validate-spec.sh",
+    "smoke": "DEVCONT_NO_PROMPT=1 node scripts/smoke.js"
+  },
+  "keywords": ["devcontainer", "cli", "docker", "claude-code"],
+  "author": "Emre Aladag",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aladagemre/devcont.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aladagemre/devcont/issues"
+  },
+  "homepage": "https://github.com/aladagemre/devcont#readme",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.0.0",
+    "chalk": "^5.3.0"
+  }
+}

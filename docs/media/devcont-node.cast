@@ -1,0 +1,4 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1736600000, "title": "devcont node init", "env": {"SHELL": "/bin/bash", "TERM": "xterm-256color"}}
+[0.0, "o", "$ devcont init --template node my-app\r\n"]
+[0.2, "o", "Initializing devcontainer...\r\n  Target: my-app\r\n  Source: Bundled templates\r\n  Template: node\r\n"]
+[0.8, "o", "Devcontainer initialized successfully!\r\n1. cd my-app\r\n2. devcont up\r\n3. devcont attach\r\n"]

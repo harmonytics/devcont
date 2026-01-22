@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "fullstack",
+      "label": "Fullstack (Django + Next.js)",
+      "description": "Python backend + Node.js frontend with PostgreSQL and Redis",
+      "languages": ["python", "javascript", "typescript"],
+      "supportsCompose": true,
+      "path": "fullstack"
+    },
+    {
+      "id": "python-uv",
+      "label": "Python (UV)",
+      "description": "UV-based Python template",
+      "languages": ["python"],
+      "requiresUv": true,
+      "supportsCompose": false,
+      "path": "python-uv"
+    },
+    {
+      "id": "python",
+      "label": "Python",
+      "description": "Python template using uv-based Docker image",
+      "languages": ["python"],
+      "requiresUv": false,
+      "supportsCompose": false,
+      "path": "python"
+    },
+    {
+      "id": "node",
+      "label": "Node.js",
+      "description": "Node.js template with ESLint/Prettier",
+      "languages": ["javascript", "typescript"],
+      "supportsCompose": false,
+      "path": "node"
+    },
+    {
+      "id": "go",
+      "label": "Go",
+      "description": "Go template for go.mod projects",
+      "languages": ["go"],
+      "supportsCompose": false,
+      "path": "go"
+    },
+    {
+      "id": "rust",
+      "label": "Rust",
+      "description": "Rust template with rust-analyzer",
+      "languages": ["rust"],
+      "supportsCompose": false,
+      "path": "rust"
+    },
+    {
+      "id": "php",
+      "label": "PHP",
+      "description": "PHP template with Composer and Intelephense",
+      "languages": ["php"],
+      "supportsCompose": false,
+      "path": "php"
+    },
+    {
+      "id": "compose-multi",
+      "label": "Compose (generic)",
+      "description": "Uses docker-compose.yml and targets an app service",
+      "languages": [],
+      "supportsCompose": true,
+      "path": "compose-multi"
+    },
+    {
+      "id": "generic",
+      "label": "Generic",
+      "description": "Base Ubuntu template when no stack detected",
+      "languages": [],
+      "supportsCompose": false,
+      "path": "generic"
+    }
+  ]
+}
