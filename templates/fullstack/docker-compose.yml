@@ -1,12 +1,6 @@
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        TZ: "${TZ:-UTC}"
-        GIT_DELTA_VERSION: "0.18.2"
-        ZSH_IN_DOCKER_VERSION: "1.2.0"
+    image: ghcr.io/harmonytics/django-nextjs:latest
 
     volumes:
       - ..:/workspace:delegated

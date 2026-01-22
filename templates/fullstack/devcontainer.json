@@ -35,7 +35,6 @@
     }
   },
   "remoteUser": "node",
-  "postCreateCommand": "cd /workspace/backend && uv sync || true; cd /workspace/frontend && npm install || true",
   "postStartCommand": "sudo /usr/local/bin/init-firewall.sh || echo 'Firewall init failed, continuing'",
   "waitFor": "postStartCommand"
 }
