@@ -189,7 +189,9 @@ export async function downCommand(folder = '.', options = {}) {
   if (composeFile) {
     console.log(chalk.blue('\nUsing docker compose down...'));
     if (!dryRun) {
-      const result = spawnSync('docker', ['compose', 'down'], {
+      // Use project name from parent folder (matches devcontainer CLI behavior)
+      const projectName = `${basename(folderPath)}_devcontainer`;
+      const result = spawnSync('docker', ['compose', '-p', projectName, 'down'], {
         cwd: devcontainerDir,
         stdio: 'inherit'
       });
