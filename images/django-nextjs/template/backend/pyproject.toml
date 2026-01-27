@@ -1,14 +1,20 @@
 [project]
 name = "backend"
 version = "0.1.0"
-description = "Django REST API backend"
+description = "Django REST API backend with Celery, Allauth, and DRF"
 requires-python = ">=3.12"
 dependencies = [
-    "django>=5.2.9",
-    "djangorestframework>=3.15",
-    "django-cors-headers>=4.4",
+    "django>=5.2",
+    "djangorestframework>=3.16",
+    "django-cors-headers>=4.6",
+    "django-environ>=0.12",
+    "django-allauth>=65.4",
+    "dj-rest-auth[with-social]>=7.0",
+    "django-celery-beat>=2.7",
+    "celery>=5.4",
+    "redis>=5.2",
     "psycopg[binary]>=3.2",
-    "python-dotenv>=1.0",
+    "argon2-cffi>=23.1",
     "gunicorn>=23.0",
 ]
 
@@ -16,18 +22,24 @@ dependencies = [
 dev = [
     "pytest>=8.0",
     "pytest-django>=4.8",
-    "ruff>=0.5",
-    "mypy>=1.11",
-    "django-stubs>=5.0",
+    "ruff>=0.9",
+    "mypy>=1.14",
+    "django-stubs>=5.1",
+    "djangorestframework-stubs>=3.15",
+    "django-debug-toolbar>=5.0",
+    "django-extensions>=3.2",
 ]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "pytest>=8.0",
     "pytest-django>=4.8",
-    "ruff>=0.5",
-    "mypy>=1.11",
-    "django-stubs>=5.0",
+    "ruff>=0.9",
+    "mypy>=1.14",
+    "django-stubs>=5.1",
+    "djangorestframework-stubs>=3.15",
+    "django-debug-toolbar>=5.0",
+    "django-extensions>=3.2",
 ]
 
 [tool.ruff]
@@ -35,16 +47,17 @@ line-length = 120
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP"]
+select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.mypy]
 python_version = "3.12"
-plugins = ["mypy_django_plugin.main"]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 strict = true
 
 [tool.django-stubs]
-django_settings_module = "config.settings"
+django_settings_module = "config.settings.local"
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "config.settings"
+DJANGO_SETTINGS_MODULE = "config.settings.test"
 python_files = ["test_*.py"]
+addopts = "-v --tb=short"
