@@ -6,6 +6,9 @@ services:
       - ..:/workspace:delegated
       - bashhistory:/commandhistory
       - claude-config:/home/node/.claude
+      - ~/.claude/agents:/home/node/.claude/agents
+      - ~/.claude/skills:/home/node/.claude/skills
+      - ~/.claude/plugins:/home/node/.claude/plugins
       - backend-venv:/workspace/backend/.venv
       - frontend-node-modules:/workspace/frontend/node_modules
 
