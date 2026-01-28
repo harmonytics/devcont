@@ -16,12 +16,13 @@ function assert(condition, message) {
 function validateTemplateEntry(entry) {
   const templateDir = join(templatesRoot, entry.path);
   const devcontainerPath = join(templateDir, 'devcontainer.json');
-  const dockerfilePath = join(templateDir, 'Dockerfile');
 
   assert(statSync(templateDir).isDirectory(), `Template directory missing: ${templateDir}`);
   JSON.parse(readFileSync(devcontainerPath, 'utf-8'));
-  const dockerfile = readFileSync(dockerfilePath, 'utf-8');
-  assert(dockerfile.trim().length > 0, `Dockerfile empty for template ${entry.id}`);
+
+  const hasDockerfile = statSync(join(templateDir, 'Dockerfile'), { throwIfNoEntry: false })?.isFile();
+  const hasCompose = statSync(join(templateDir, 'docker-compose.yml'), { throwIfNoEntry: false })?.isFile();
+  assert(hasDockerfile || hasCompose, `Template ${entry.id} needs a Dockerfile or docker-compose.yml`);
 }
 
 function validateSharedAssets() {
