@@ -9,7 +9,7 @@ import environ
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
 env = environ.Env()
 
@@ -54,6 +54,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
+    "allauth.mfa",
     "allauth.socialaccount",
     "corsheaders",
     "rest_framework",
@@ -61,6 +62,7 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "django_celery_beat",
+    "drf_spectacular",
 ]
 LOCAL_APPS = [
     "users",
@@ -146,6 +148,10 @@ TEMPLATES = [
 ]
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
+# FIXTURES
+# ------------------------------------------------------------------------------
+FIXTURE_DIRS = [str(BASE_DIR / "fixtures")]
+
 # SECURITY
 # ------------------------------------------------------------------------------
 SESSION_COOKIE_HTTPONLY = True
@@ -203,6 +209,7 @@ CELERY_TASK_SOFT_TIME_LIMIT = 60
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_WORKER_SEND_TASK_EVENTS = True
 CELERY_TASK_SEND_SENT_EVENT = True
+CELERY_WORKER_HIJACK_ROOT_LOGGER = False
 
 # django-allauth
 # ------------------------------------------------------------------------------
@@ -210,7 +217,11 @@ ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_ADAPTER = "users.adapters.AccountAdapter"
+SOCIALACCOUNT_ADAPTER = "users.adapters.SocialAccountAdapter"
+ACCOUNT_FORMS = {"signup": "users.forms.UserSignupForm"}
+SOCIALACCOUNT_FORMS = {"signup": "users.forms.UserSocialSignupForm"}
 
 # django-rest-framework
 # ------------------------------------------------------------------------------
@@ -220,8 +231,18 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # django-cors-headers
 # ------------------------------------------------------------------------------
 CORS_URLS_REGEX = r"^/api/.*$"
+
+# drf-spectacular
+# ------------------------------------------------------------------------------
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Backend API",
+    "DESCRIPTION": "Documentation of API endpoints of Backend",
+    "VERSION": "1.0.0",
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
+}

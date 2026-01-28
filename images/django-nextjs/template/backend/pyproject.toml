@@ -16,18 +16,10 @@ dependencies = [
     "psycopg[binary]>=3.2",
     "argon2-cffi>=23.1",
     "gunicorn>=23.0",
-]
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=8.0",
-    "pytest-django>=4.8",
-    "ruff>=0.9",
-    "mypy>=1.14",
-    "django-stubs>=5.1",
-    "djangorestframework-stubs>=3.15",
-    "django-debug-toolbar>=5.0",
-    "django-extensions>=3.2",
+    "drf-spectacular>=0.28",
+    "django-anymail[mailgun]>=12.0",
+    "sentry-sdk>=2.0",
+    "whitenoise>=6.8",
 ]
 
 [dependency-groups]
@@ -40,6 +32,9 @@ dev = [
     "djangorestframework-stubs>=3.15",
     "django-debug-toolbar>=5.0",
     "django-extensions>=3.2",
+    "factory-boy>=3.3",
+    "django-coverage-plugin>=3.1",
+    "coverage>=7.0",
 ]
 
 [tool.ruff]
@@ -60,4 +55,13 @@ django_settings_module = "config.settings.local"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings.test"
 python_files = ["test_*.py"]
-addopts = "-v --tb=short"
+addopts = "-v --tb=short --reuse-db"
+
+[tool.coverage.run]
+include = ["*"]
+omit = ["*/migrations/*", "*/tests/*"]
+plugins = ["django_coverage_plugin"]
+
+[tool.coverage.report]
+fail_under = 0
+show_missing = true

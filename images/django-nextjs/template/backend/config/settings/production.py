@@ -2,8 +2,10 @@
 Production settings.
 """
 
+import logging
+
 from .base import *  # noqa: F403
-from .base import env
+from .base import MIDDLEWARE, env
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -28,8 +30,10 @@ CACHES = {
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
 SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_NAME = "__Secure-sessionid"
 CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 60
+CSRF_COOKIE_NAME = "__Secure-csrftoken"
+SECURE_HSTS_SECONDS = 518400
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
     "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS",
     default=True,
@@ -39,6 +43,26 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
     "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF",
     default=True,
 )
+
+# MIDDLEWARE
+# ------------------------------------------------------------------------------
+# WhiteNoise must be inserted right after SecurityMiddleware
+MIDDLEWARE = [  # noqa: F811
+    *MIDDLEWARE[:MIDDLEWARE.index("django.middleware.security.SecurityMiddleware") + 1],
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    *MIDDLEWARE[MIDDLEWARE.index("django.middleware.security.SecurityMiddleware") + 1:],
+]
+
+# STORAGES
+# ------------------------------------------------------------------------------
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # ADMIN
 # ------------------------------------------------------------------------------
@@ -54,6 +78,22 @@ SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 EMAIL_SUBJECT_PREFIX = env(
     "DJANGO_EMAIL_SUBJECT_PREFIX",
     default="[Backend] ",
+)
+
+# django-anymail
+# ------------------------------------------------------------------------------
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+ANYMAIL = {
+    "MAILGUN_API_KEY": env("MAILGUN_API_KEY", default=""),
+    "MAILGUN_SENDER_DOMAIN": env("MAILGUN_DOMAIN", default=""),
+    "MAILGUN_API_URL": env("MAILGUN_API_URL", default="https://api.mailgun.net/v3"),
+}
+
+# django-allauth
+# ------------------------------------------------------------------------------
+ACCOUNT_EMAIL_SUBJECT_PREFIX = env(
+    "DJANGO_ACCOUNT_EMAIL_SUBJECT_PREFIX",
+    default=EMAIL_SUBJECT_PREFIX,
 )
 
 # django-cors-headers
@@ -101,3 +141,29 @@ LOGGING = {
         },
     },
 }
+
+# Sentry
+# ------------------------------------------------------------------------------
+SENTRY_DSN = env("SENTRY_DSN", default="")
+if SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.celery import CeleryIntegration
+    from sentry_sdk.integrations.django import DjangoIntegration
+    from sentry_sdk.integrations.logging import LoggingIntegration
+    from sentry_sdk.integrations.redis import RedisIntegration
+
+    sentry_logging = LoggingIntegration(
+        level=logging.INFO,
+        event_level=logging.ERROR,
+    )
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            sentry_logging,
+            DjangoIntegration(),
+            CeleryIntegration(),
+            RedisIntegration(),
+        ],
+        environment=env("SENTRY_ENVIRONMENT", default="production"),
+        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
+    )
