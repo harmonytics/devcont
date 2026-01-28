@@ -49,6 +49,29 @@ Common helper scripts live under `templates/_shared`. Currently this houses `ini
 - Record template init flows using [asciinema](https://asciinema.org/): `asciinema rec docs/media/node-init.cast` while running `devcont init` for a sample repo.
 - For screenshots, capture `.devcontainer/` structure and VS Code extension recommendations after init; store assets under `docs/media/` and reference them from README/docs once available.
 
+### Docker image access
+
+Some templates (e.g. `fullstack`) reference pre-built images from GitHub Container Registry (`ghcr.io/harmonytics/*`). Image visibility depends on how the package is configured on GitHub.
+
+**Public images** — no authentication needed:
+
+```bash
+devcont init --template fullstack
+devcont up   # pulls ghcr.io/harmonytics/django-nextjs:latest automatically
+```
+
+**Private images** — users must authenticate with Docker before pulling:
+
+```bash
+# Create a GitHub Personal Access Token with read:packages scope
+echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
+
+# Then proceed as normal
+devcont up
+```
+
+To make a private image public, go to **GitHub → Packages → \<package\> → Package settings → Change visibility → Public**. This can be done independently of the repository's visibility.
+
 ### Legacy `--source`
 
 If you still need to copy from a custom `.devcontainer` repo, pass `--source <path>`. This bypasses template detection entirely and retains the historical copy-from-source + patch flow. Use sparingly; the bundled templates are the preferred path.

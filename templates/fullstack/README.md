@@ -46,6 +46,16 @@ Set in `.env` or `docker-compose.yml`:
 - `SECRET_KEY`: Django secret (change in production)
 - `DEBUG`: Django debug mode (default: True)
 
+## Docker Image Access
+
+This template pulls `ghcr.io/harmonytics/django-nextjs:latest`. If the image is private, authenticate first:
+
+```bash
+echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
+```
+
+The token needs the `read:packages` scope. See `docs/templates.md` for details.
+
 ## Stack
 
 - Node.js 24
