@@ -1,10 +1,14 @@
 FROM ghcr.io/harmonytics/devcont-base:latest
 
 LABEL org.opencontainers.image.source="https://github.com/harmonytics/devcont"
-LABEL org.opencontainers.image.description="Django 5 + Next.js 15 fullstack starter template"
+LABEL org.opencontainers.image.description="Django 5.2 + Next.js 16 fullstack starter template"
 LABEL org.opencontainers.image.licenses="MIT"
 
 USER root
+
+# Install psql client (PostgreSQL 17)
+RUN apt-get update && apt-get install -y postgresql-client-17 && \
+  rm -rf /var/lib/apt/lists/*
 
 # Create template directory and volume mount points
 RUN mkdir -p /app-template/backend /app-template/frontend \
